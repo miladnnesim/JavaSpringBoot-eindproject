@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>Inloggen</h2>
+<div th:if="${param.error}" style="color:red">Ongeldige email of wachtwoord.</div>
+<div th:if="${param.logout}" style="color:green">Je bent uitgelogd.</div>
+
+<form th:action="@{/login}" method="post">
+  <input type="text" name="username" placeholder="Email" required /> <input type="password" name="password" placeholder="Wachtwoord" required />
+  <button type="submit">Log in</button>
+</form>
+<p>Nog geen account? <a href="/register">Registreer hier</a></p>
+</body>
+</html>

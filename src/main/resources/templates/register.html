@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<h2>Registreer als student</h2>
+<div th:if="${errorMessage}" style="color: red; margin-bottom: 10px;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<div th:if="${successMessage}" style="color: green; margin-bottom: 10px;">
+    <p th:text="${successMessage}"></p>
+</div>
+<form th:action="@{/register}" method="post">
+    <input type="email" name="email" required placeholder="Emailadres">
+
+    <input type="password" name="password" required
+
+           placeholder="Wachtwoord">
+
+    <button type="submit">Account aanmaken</button>
+</form>
+</body>
+</html>
