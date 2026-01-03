@@ -7,6 +7,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -33,6 +34,7 @@ public class CheckoutController {
         // 1. Maak de hoofdreservatie aan
         Reservation reservation = new Reservation(currentUser.getUsername(), cartService.getTotaalPrijs());
 
+
         // 2. Loop door de winkelmand en maak items + verlaag stock
         List<ReservationItem> reservationItems = new ArrayList<>();
 
@@ -53,13 +55,15 @@ public class CheckoutController {
             ReservationItem resItem = new ReservationItem(p, reservation, cartItem.getAantal(), cartItem.getDagen());
             reservationItems.add(resItem);
         }
-
         // 3. Koppel items aan reservatie en sla alles op
         reservation.setItems(reservationItems);
         reservationRepository.save(reservation);
 
         cartService.leegmaken();
-        ra.addFlashAttribute("successMessage", "Reservatie voltooid! Bekijk je overzicht bij 'Mijn Reservaties'.");
-        return "redirect:/catalogus";
+        return "redirect:/bevestiging";
+    }
+    @GetMapping("/bevestiging")
+    public String toonBevestiging() {
+        return "bevestiging"; // Spring zoekt naar bevestiging.html
     }
 }
