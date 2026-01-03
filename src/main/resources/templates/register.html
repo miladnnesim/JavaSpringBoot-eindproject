@@ -1,22 +1,45 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registreren - Rental App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .register-card { max-width: 450px; margin-top: 80px; border: none; border-radius: 15px; }
+    </style>
+</head>
 <body>
-<h2>Registreer als student</h2>
-<div th:if="${errorMessage}" style="color: red; margin-bottom: 10px;">
-    <p th:text="${errorMessage}"></p>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 card shadow-sm register-card p-4">
+            <h2 class="text-center mb-4 fw-bold text-success">Account aanmaken</h2>
+
+            <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+            <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+
+            <form th:action="@{/register}" method="post">
+                <div class="mb-3">
+                    <label class="form-label">E-mailadres</label>
+                    <input type="email" name="email" class="form-control" placeholder="jouw@email.be" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Wachtwoord</label>
+                    <input type="password" name="password" class="form-control" placeholder="Kies een sterk wachtwoord" required>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Registreren</button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-muted">Heb je al een account? <a href="/login" class="text-decoration-none">Log hier in</a></p>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div th:if="${successMessage}" style="color: green; margin-bottom: 10px;">
-    <p th:text="${successMessage}"></p>
-</div>
-<form th:action="@{/register}" method="post">
-    <input type="email" name="email" required placeholder="Emailadres">
-
-    <input type="password" name="password" required
-
-           placeholder="Wachtwoord">
-
-    <button type="submit">Account aanmaken</button>
-</form>
 </body>
 </html>
