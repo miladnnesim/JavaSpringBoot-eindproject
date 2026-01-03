@@ -1,10 +1,133 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Materiaal Catalogus</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <style>
+    html { scrollbar-gutter: stable; }
+    .product-card { transition: transform 0.2s, box-shadow 0.2s; border: none; }
+    .product-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    .input-group-text { background-color: #f8f9fa; font-size: 0.85rem; }
+    .category-badge { position: absolute; top: 1rem; right: 1rem; }
+    .price-tag { color: #0d6efd; font-weight: bold; font-size: 1.2rem; }
+  </style>
 </head>
-<body>
-$END$
+<body class="bg-light">
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container my-5">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h1 class="fw-bold text-dark m-0">Materiaal Catalogus</h1>
+      <p class="text-muted" th:text="${producten.size() + ' items beschikbaar voor verhuur'}">0 items</p>
+    </div>
+  </div>
+
+  <div class="row mb-5">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <form th:action="@{/catalogus}" method="get" class="row g-3">
+            <div class="col-lg-4">
+              <label class="form-label fw-bold small text-uppercase">Zoeken</label>
+              <div class="input-group">
+                <span class="input-group-text border-end-0 bg-white"><i class="bi bi-search"></i></span>
+                <input type="text" name="zoekterm" class="form-control border-start-0"
+                       placeholder="Bijv. Camera..." th:value="${zoekterm}" />
+              </div>
+            </div>
+
+            <div class="col-lg-3">
+              <label class="form-label fw-bold small text-uppercase">Categorie</label>
+              <select name="categorie" class="form-select" onchange="this.form.submit()">
+                <option value="Alle" th:selected="${geselecteerdeCategorie == 'Alle'}">Alle Categorieën</option>
+                <option th:each="cat : ${ {'Verlichting', 'Kabels', 'Camera', 'Audio', 'Accessoires'} }"
+                        th:value="${cat}" th:text="${cat}" th:selected="${geselecteerdeCategorie == cat}"></option>
+              </select>
+            </div>
+
+            <div class="col-lg-3">
+              <label class="form-label fw-bold small text-uppercase">Sorteren op</label>
+              <div class="input-group">
+                <span class="input-group-text bg-white"><i class="bi bi-sort-down"></i></span>
+                <select name="sort" class="form-select" onchange="this.form.submit()">
+                  <option value="naam_asc" th:selected="${sort == 'naam_asc'}">Naam (A-Z)</option>
+                  <option value="naam_desc" th:selected="${sort == 'naam_desc'}">Naam (Z-A)</option>
+                  <option value="prijs_asc" th:selected="${sort == 'prijs_asc'}">Prijs (Laag - Hoog)</option>
+                  <option value="prijs_desc" th:selected="${sort == 'prijs_desc'}">Prijs (Hoog - Laag)</option>
+                  <option value="stock_desc" th:selected="${sort == 'stock_desc'}">Hoogste voorraad</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-lg-2 d-flex align-items-end">
+              <a href="/catalogus" class="btn btn-outline-secondary w-100" title="Wis alle filters">
+                <i class="bi bi-x-circle"></i> Reset
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+    <div class="col-md-6 col-xl-4" th:each="p : ${producten}">
+      <div class="card h-100 product-card shadow-sm">
+        <div class="card-body p-4">
+          <span class="badge bg-light text-primary category-badge" th:text="${p.categorie}">Categorie</span>
+          <h5 class="card-title fw-bold mb-1" th:text="${p.naam}">Product Naam</h5>
+          <p class="price-tag mb-3" th:text="'€' + ${p.prijsPerDag} + ' /dag'"></p>
+
+          <hr class="text-muted opacity-25">
+
+          <div class="d-flex align-items-center mb-4">
+            <div th:class="${p.stock > 0} ? 'text-success' : 'text-danger'">
+              <i th:class="${p.stock > 0} ? 'bi bi-check-circle-fill' : 'bi bi-x-circle-fill'"></i>
+              <small class="fw-bold" th:text="${p.stock > 0 ? p.stock + ' op voorraad' : 'Niet op voorraad'}"></small>
+            </div>
+          </div>
+
+          <form th:if="${p.stock > 0}" th:action="@{'/cart/add/' + ${p.id}}" method="post">
+            <div class="row g-2 mb-3">
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Aantal</label>
+                <div class="input-group input-group-sm">
+                  <input type="number" name="aantal" value="1" min="1" th:max="${p.stock}" class="form-control text-center">
+                  <span class="input-group-text px-2"><i class="bi bi-box"></i></span>
+                </div>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold">Dagen</label>
+                <div class="input-group input-group-sm">
+                  <input type="number" name="dagen" value="1" min="1" max="30" class="form-control text-center">
+                  <span class="input-group-text px-2"><i class="bi bi-calendar3"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 fw-bold">
+              <i class="bi bi-cart-plus me-2"></i> In winkelwagen
+            </button>
+          </form>
+
+          <button th:if="${p.stock == 0}" class="btn btn-secondary w-100 disabled" disabled>
+            Tijdelijk uitverkocht
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div th:if="${producten.isEmpty()}" class="text-center py-5">
+    <i class="bi bi-search text-muted" style="font-size: 3rem;"></i>
+    <p class="mt-3 text-muted">Geen producten gevonden die voldoen aan je zoekopdracht.</p>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
