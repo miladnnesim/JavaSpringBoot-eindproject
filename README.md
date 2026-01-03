@@ -83,4 +83,9 @@ Surf naar `http://localhost:8080/catalogus`.
 
 
 # Referenties
+app secrets : https://chatgpt.com/share/69591b10-6dec-8011-a800-d36344c3b44f
+ui en ux : https://gemini.google.com/share/6547b778aa9c
+debugging: https://drive.google.com/drive/folders/1hJtvacMV74bG3qOMDvEdMAUQcm77lko3?usp=sharing
 https://drive.google.com/file/d/1MwdHcTj8_MNbkGdt-ls-XX7jaPZPmJN5/view?usp=sharing
+
+
