@@ -22,20 +22,19 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        // Specifieke uitzonderingen eerst
-                        .requestMatchers("/register", "/login", "/css/**", "/js/**").permitAll()
-                        // De catch-all als laatste
+                        // Iedereen mag bij de login, registratie en statische bestanden (CSS)
+                        .requestMatchers("/login", "/register", "/css/**", "/js/**").permitAll()
                         .anyRequest().authenticated()
                 )
-
                 .formLogin(form -> form
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/test", true)
+                        .loginPage("/login")               // Zegt: "Gebruik mijn GET route"
+                        .loginProcessingUrl("/login")      // Zegt: "Vang hier de POST van het formulier op"
+                        .defaultSuccessUrl("/catalogus", true) // Waar ga je heen na login?
+                        .failureUrl("/login?error=true")   // Voegt een error-parameter toe bij fouten
                         .permitAll()
                 )
-
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout")
+                        .logoutSuccessUrl("/login?logout=true")
                         .permitAll()
                 );
 

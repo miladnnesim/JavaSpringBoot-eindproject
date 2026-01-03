@@ -15,6 +15,10 @@ public class AuthController {
     public AuthController(UserService userService) {
         this.userService = userService;
     }
+    @GetMapping("/login")
+    public String toonLogin() {
+        return "login"; // Spring zoekt nu naar templates/login.html
+    }
     @GetMapping("/register")
     public String toonRegistratieFormulier() {
         return "register";
