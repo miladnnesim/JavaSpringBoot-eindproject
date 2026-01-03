@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments :: header-links}"></head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<style>
+    html { scrollbar-gutter: stable; }
+    .table thead th { text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px; color: #6c757d; }
+
+</style>
+<body class="bg-light">
+<div th:replace="~{fragments :: navbar}"></div>
+
+<div class="container my-5">
+    <h2 class="fw-bold mb-4">Mijn Reservatiegeschiedenis</h2>
+
+    <div th:if="${reservaties.isEmpty()}" class="alert alert-info">
+        Je hebt nog geen reservaties geplaatst.
+    </div>
+
+    <div th:each="res : ${reservaties}" class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+            <div>
+                <span class="text-muted small text-uppercase fw-bold">Bestelnummer:</span>
+                <span class="fw-bold" th:text="'#' + ${res.id}">#1</span>
+            </div>
+            <div class="text-end">
+                <span class="text-muted small d-block">Datum:</span>
+                <span class="fw-semibold" th:text="${#temporals.format(res.reservatieDatum, 'dd-MM-yyyy HH:mm')}">Datum</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table table-sm table-borderless align-middle mb-0">
+                <thead>
+                <tr class="text-muted small">
+                    <th>Materiaal</th>
+                    <th class="text-center">Aantal</th>
+                    <th class="text-center">Dagen</th>
+                    <th class="text-end">Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${res.items}">
+                    <td class="fw-bold" th:text="${item.product.naam}">Product</td>
+                    <td class="text-center" th:text="${item.aantal} + 'x'">1x</td>
+                    <td class="text-center" th:text="${item.dagen} + ' d.'">3 d.</td>
+                    <td class="text-end">
+                        <span class="badge bg-success-subtle text-success border border-success-subtle">Bevestigd</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer bg-light border-0 d-flex justify-content-between align-items-center">
+            <span class="text-muted small">Betaald met studenten-account</span>
+            <h5 class="fw-bold m-0" th:text="'Totaal: €' + ${res.totaalPrijs}">Totaal: €0.00</h5>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
